@@ -8,14 +8,18 @@ const botaoLongo = document.querySelector(".app__card-button--longo");
 const botaoAtivo = document.querySelectorAll(".app__card-button");
 const altMusica = document.querySelector("#alternar-musica");
 const começarPausar = document.querySelector("#start-pause");
+const btComeçarPausar = document.querySelector("#start-pause span");
+const começarPausarImg = document.querySelector(
+  ".app__card-primary-butto-icon"
+);
+const tempoTela = document.querySelector("#timer");
 
 const sons = new Audio("/sons/luna-rise-part-one.mp3");
-const somPlay = new Audio ("/sons/play.wav")
-const somPause = new Audio ("/sons/pause.mp3")
-const somBeep = new Audio ("/sons/beep.mp3")
+const somPlay = new Audio("/sons/play.wav");
+const somPause = new Audio("/sons/pause.mp3");
+const somBeep = new Audio("/sons/beep.mp3");
 
-
-let temporizador = 5;
+let temporizador = 1500;
 let intervaloId = null;
 
 sons.loop = true;
@@ -29,21 +33,25 @@ altMusica.addEventListener("change", function () {
 });
 
 botaoFoco.addEventListener("click", function () {
+  temporizador = 1500
   alterarContexto("foco");
   botaoFoco.classList.add("active");
 });
 
 botaoCurto.addEventListener("click", function () {
+  temporizador = 300
   alterarContexto("descanso-curto");
   botaoCurto.classList.add("active");
 });
 
 botaoLongo.addEventListener("click", function () {
+  temporizador = 900
   alterarContexto("descanso-longo");
   botaoLongo.classList.add("active");
 });
 
 function alterarContexto(contexto) {
+  mostrarContagem()
   htmlBg.setAttribute("data-contexto", contexto);
   bannerImg.src = `/imagens/${contexto}.png`;
   switch (contexto) {
@@ -70,28 +78,41 @@ function alterarContexto(contexto) {
 
 const contagemRegressiva = () => {
   if (temporizador <= 0) {
-    somBeep.play()
-    resetar();
+    somBeep.play();
     alert("tempo finalizado");
+    resetar();
     return;
   }
   temporizador -= 1;
-  console.log("Temporizador: " + temporizador);
+  mostrarContagem();
 };
 
 começarPausar.addEventListener("click", iniciarPausar);
 
 function iniciarPausar() {
   if (intervaloId) {
-    somPause.play()
+    somPause.play();
+
     resetar();
     return;
   }
-  somPlay.play()
+  somPlay.play();
   intervaloId = setInterval(contagemRegressiva, 1000);
+  btComeçarPausar.textContent = "Pausar";
+  começarPausarImg.src = "/imagens/pause.png";
 }
 
 function resetar() {
   clearInterval(intervaloId);
+  btComeçarPausar.textContent = "Começar";
+  começarPausarImg.src = "/imagens/play_arrow.png";
   intervaloId = null;
 }
+
+function mostrarContagem() {
+  const contagem = new Date (temporizador * 1000)
+  const tempo = contagem.toLocaleString('pt-br', {minute: '2-digit', second: '2-digit'})
+  tempoTela.innerHTML = `${tempo}`;
+}
+
+mostrarContagem()
