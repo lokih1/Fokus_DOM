@@ -1,15 +1,14 @@
 const taskContainerList = document.querySelector('.app__section-task-list');
 
-let tarefas = [
-    {
-        descricao: 'tarefa concluida',
-        concluida: true
-    },
-    {
-        descricao: 'tarefa pendente',
-        concluida: false
-    }
-]
+const taskForm = document.querySelector('.app__form-add-task')
+const formToggle = document.querySelector('.app__button--add-task')
+const lblForm = document.querySelector('.app__form-label')
+
+const textArea = document.querySelector('.app__form-textarea')
+
+const formClose = document.querySelector('.app__form-footer__button--cancel')
+
+let tarefas = []
 
 const taskSvg = `
 <svg class="app__section-task-icon-status" width="24" height="24" viewBox="0 0 24 24"
@@ -43,3 +42,29 @@ tarefas.forEach(task => {
     const taskItem = taskCreation(task)
     taskContainerList.appendChild(taskItem)
 })
+
+formToggle.addEventListener('click', () => {
+    lblForm.textContent = 'Adicionando tarefa'
+    taskForm.classList.toggle('hidden') 
+})
+
+taskForm.addEventListener('submit', (evento) => {
+    evento.preventDefault()
+    const task = {
+        descricao: textArea.value,
+        concluida: false
+    }
+    tarefas.push(task)
+    const taskItem = taskCreation(task)
+    taskContainerList.appendChild(taskItem)
+    textArea.value=''
+})
+
+formClose.addEventListener('click', () => {
+    taskForm.classList.toggle('hidden') 
+    textArea.value=''
+})
+
+localStorage.setItem('quantidade', 10)  /* localStorage.setItem( key, 10) */
+
+
