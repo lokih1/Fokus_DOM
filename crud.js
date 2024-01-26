@@ -6,9 +6,13 @@ const lblForm = document.querySelector('.app__form-label')
 
 const textArea = document.querySelector('.app__form-textarea')
 
+const taskActiveDescription = document.querySelector('.app__section-active-task-description')
+
 const formClose = document.querySelector('.app__form-footer__button--cancel')
 
-let tarefas = []
+const localStorageTask = localStorage.getItem('tarefas')
+
+let tarefas = localStorageTask ? JSON.parse(localStorageTask) : []
 
 const taskSvg = `
 <svg class="app__section-task-icon-status" width="24" height="24" viewBox="0 0 24 24"
@@ -19,6 +23,12 @@ const taskSvg = `
         fill="#01080E" />
 </svg>
 `
+let selectedTask = null
+let selectedTaskItem = null
+
+/* const selectedTask = () => {
+
+} */
 
 function taskCreation(tarefa) {
     const li = document.createElement('li')
@@ -31,6 +41,10 @@ function taskCreation(tarefa) {
     tagP.classList.add('app__section-task-list-item-description')
 
     tagP.textContent = tarefa.descricao
+
+    onclick = () => {
+        selectTask(tarefa, li)
+    }
     
     li.appendChild(svgIcon)
     li.appendChild(tagP)
@@ -48,6 +62,10 @@ formToggle.addEventListener('click', () => {
     taskForm.classList.toggle('hidden') 
 })
 
+const localStorageUpdate = () => {
+    localStorage.setItem('tarefas', JSON.stringify(tarefas))
+}
+
 taskForm.addEventListener('submit', (evento) => {
     evento.preventDefault()
     const task = {
@@ -57,14 +75,20 @@ taskForm.addEventListener('submit', (evento) => {
     tarefas.push(task)
     const taskItem = taskCreation(task)
     taskContainerList.appendChild(taskItem)
+    localStorageUpdate()
     textArea.value=''
+    
 })
 
 formClose.addEventListener('click', () => {
     taskForm.classList.toggle('hidden') 
     textArea.value=''
+    
 })
 
-localStorage.setItem('quantidade', 10)  /* localStorage.setItem( key, 10) */
+/* localStorage.setItem('quantidade', 10)   localStorage.setItem( key, 10) */
+
+
+
 
 
